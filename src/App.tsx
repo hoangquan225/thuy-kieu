@@ -7,7 +7,7 @@ import LogoChrismasImg from './assets/img/logo-chrismas.png';
 import dayjs from 'dayjs'; // You can use dayjs or simply work with Date objects
 import html2canvas from 'html2canvas-pro';
 import jsPDF from 'jspdf';
-import { hotelList } from './utils/contants';
+import { hotelList, roomTypeList } from './utils/contants';
 
 const { RangePicker } = DatePicker;
 
@@ -317,7 +317,7 @@ function App() {
           </Form.Item>
 
           <Form.Item
-            label="Password"
+            label="Wifi Password"
             name="password"
           >
             <Input />
@@ -327,7 +327,12 @@ function App() {
             name="roomType"
             rules={[{ required: true, message: 'Vui lòng nhập loại phòng!' }]}
           >
-            <Input />
+            <Select 
+              options={roomTypeList.map(type => ({ label: type.value, value: type.value }))}
+              onChange={(value) => {
+                form.setFieldsValue({ roomType: value });
+              }}
+            />
           </Form.Item>
           <Form.Item
             label="Số lượng phòng"
