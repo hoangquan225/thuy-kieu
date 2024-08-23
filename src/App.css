@@ -34,3 +34,10 @@
 .ant-table-container {
     border-radius: unset !important;
 }
+
+.ant-table-thead {
+    .ant-table-cell {
+        font-weight: 700 !important;
+        font-size: 16px;
+    }
+}

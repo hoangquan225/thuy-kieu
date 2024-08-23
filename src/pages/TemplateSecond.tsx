@@ -132,6 +132,8 @@ const TemplateSecond = () => {
   const [isVi, setIsVi] = useState(true);
   const [template, setTemplate] = useState(LogoImg);
   const [form1] = Form.useForm();
+  const [isEditing, setIsEditing] = useState(false);
+  const [noteText, setNoteText] = useState<any>("note");
 
   const [formData, setFormData] = useState({
     employeeName: 'LÊ THỊ THÚY KIỀU (Ms.) Sales Manager',
@@ -141,6 +143,8 @@ const TemplateSecond = () => {
     customerPhoneNumber: '',
     hotelName: '',
     address: '',
+    hotelNameV2: '',
+    addressV2: '',
     hotline: '0362542001',
     checkInOut: [null, null],
     password: '',
@@ -170,6 +174,19 @@ const TemplateSecond = () => {
       });
   };
 
+  const handleNoteChange = (e: any) => {
+    setNoteText(e.target.value);
+  };
+
+  const handleFocus = () => {
+    setIsEditing(true);
+  };
+
+  const handleBlur = (e: any) => {
+    setIsEditing(false);
+  };
+
+  
   const exportPDF = () => {
     const input = document.getElementById('divToPrint');
     if (input) 
@@ -310,8 +327,8 @@ const TemplateSecond = () => {
             <Row>
               <Col span={12}>
                 <div style={{"fontSize":"1.3em", fontWeight: "bold", "whiteSpace":"nowrap","color":"#3e78bc", padding: "1em 0 0.7em"}}>{isVi ? "Thông tin khách sạn" : "Name"}</div>
-                <div style={{"marginLeft":"18px", paddingBottom: "1em", fontWeight: "bold"}}>{isVi ? "Tên" : "Name"}: {formData.hotelName}</div>
-                <div style={{"marginLeft":"18px", paddingBottom: "1em", fontWeight: "bold"}}>{isVi ? "Địa chỉ" : "Address"}: {formData.address}</div>
+                <div style={{"marginLeft":"18px", paddingBottom: "1em", fontWeight: "bold"}}>{isVi ? "Tên" : "Name"}: {formData.hotelNameV2 ? formData.hotelNameV2 : formData.hotelName}</div>
+                <div style={{"marginLeft":"18px", paddingBottom: "1em", fontWeight: "bold"}}>{isVi ? "Địa chỉ" : "Address"}: {formData.addressV2 ? formData.addressV2 : formData.address}</div>
                 <div style={{"marginLeft":"18px", paddingBottom: "1em", fontWeight: "bold"}}>{isVi ? "Hotline" : "Hotline"}: {formData.hotline}</div>
                 <div style={{"marginLeft":"18px", paddingBottom: "1em", fontWeight: "bold"}}>{isVi ? "Check in" : "Check in"}:  {formData.checkInOut[0] ? dayjs(formData.checkInOut[0]).format('DD/MM/YYYY HH:mm') : "" }</div>
                 <div style={{"marginLeft":"18px", paddingBottom: "1em", fontWeight: "bold"}}>{isVi ? "Check out" : "Check out"}: {formData.checkInOut[1] ? dayjs(formData.checkInOut[1]).format('DD/MM/YYYY HH:mm') : ""}</div>
@@ -335,12 +352,35 @@ const TemplateSecond = () => {
                 dataSource={dataSource}
                 columns={columns as ColumnTypes}
                 summary={() => (
-                  <Table.Summary.Row style={{background: "#f5f5f5"}}>
-                    <Table.Summary.Cell index={0} colSpan={3} align='center'>{isVi ? "Tổng cộng" : "Total"}</Table.Summary.Cell>
-                    <Table.Summary.Cell index={3} colSpan={1} align='center'>
-                      {formattedTotalAmount}
-                    </Table.Summary.Cell>
-                  </Table.Summary.Row>
+                  <>
+                    <Table.Summary.Row style={{background: "#f5f5f5"}}>
+                      <Table.Summary.Cell index={0} colSpan={3} align='center'>{isVi ? "Tổng cộng" : "Total"}</Table.Summary.Cell>
+                      <Table.Summary.Cell index={3} colSpan={1} align='center'>
+                        {formattedTotalAmount}
+                      </Table.Summary.Cell>
+                    </Table.Summary.Row>
+                    <Table.Summary.Row style={{background: "#f5f5f5"}}>
+                      <Table.Summary.Cell index={0} colSpan={3} align='center'>{isVi ? "Ghi chú" : "Note"}</Table.Summary.Cell>
+                      <Table.Summary.Cell index={3} colSpan={1} align='center'>
+                        {isEditing ? (
+                          <Input
+                            value={noteText}
+                            onChange={handleNoteChange}
+                            onBlur={handleBlur}
+                            autoFocus
+                            style={{ width: '100%', textAlign: 'center' }}
+                          />
+                        ) : (
+                          <div
+                            onClick={handleFocus}
+                            style={{ width: '100%', textAlign: 'center', cursor: 'pointer', minHeight: '16px', minWidth: '100px' }}
+                          >
+                            {noteText}
+                          </div>
+                        )}
+                      </Table.Summary.Cell>
+                    </Table.Summary.Row>
+                  </>
                 )}
               />
             </Row>
@@ -399,9 +439,9 @@ const TemplateSecond = () => {
         }
       </div>
 
-      <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", justifyContent: "end", gap: "16px", height: "max-content"}}>
+      <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", justifyContent: "end", gap: "16px", height: "max-content", margin: "16px"}}>
         <Button onClick={() => setIsModalOpen(true)}>sửa</Button>
-        <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }}>
+        <Button onClick={handleAdd} type="primary">
           Add a row
         </Button>
         {/* <Button onClick={() => handleDelete(count - 1)} type="primary" style={{ marginBottom: 16 }}>
@@ -482,25 +522,55 @@ const TemplateSecond = () => {
             <Input />
           </Form.Item>
           <h3 style={{borderTop: "1px solid"}}>Nhập thông tin booking</h3>
-          <Form.Item
-            label="Tên khách sạn"
-            name="hotelName"
-            rules={[{ required: true, message: 'Vui lòng nhập tên khách sạn!' }]}
-          >
-            <Select 
-              options={hotelList.map(hotel => ({ label: `${hotel.name} - ${hotel.address}`, value: hotel.name }))}
-              onChange={(value) => {
-                const hotel = hotelList.find(hotel => hotel.name === value);
-                form1.setFieldsValue({ address: hotel?.address });
-              }}
-            />
-          </Form.Item>
-          <Form.Item
-            label="Địa chỉ"
-            name="address"
-          >
-            <Input disabled/>
-          </Form.Item>
+          <Row style={{marginBottom: "16px"}} gutter={16}>
+            <Col span={14}>
+              <Form.Item
+                layout='vertical'
+                label="Tên khách sạn"
+                name="hotelName"
+                rules={[{ required: true, message: 'Vui lòng nhập tên khách sạn!' }]}
+              >
+                <Select
+                  showSearch
+                  optionFilterProp="label"
+                  options={hotelList.map(hotel => ({ label: `${hotel.name} - ${hotel.address}`, value: hotel.id }))}
+                  onChange={(value) => {
+                    const hotel = hotelList.find(hotel => hotel.id === value);
+                    form1.setFieldsValue({ address: hotel?.address, hotelName: hotel?.name });
+                  }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={10}>
+              <Form.Item
+                layout='vertical'
+                label="Tên khách sạn thay thế"
+                name="hotelNameV2"
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row style={{marginBottom: "16px"}} gutter={16}>
+            <Col span={14}>
+              <Form.Item
+                layout='vertical'
+                label="Địa chỉ"
+                name="address"
+              >
+                <Input disabled/>
+              </Form.Item>
+            </Col>
+            <Col span={10}>
+              <Form.Item
+                layout='vertical'
+                label="Địa chỉ thay thế"
+                name="addressV2"
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
           <Form.Item
             label="Hotline"
             name="hotline"
