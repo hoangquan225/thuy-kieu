@@ -360,7 +360,7 @@ const TemplateSecond = () => {
                       </Table.Summary.Cell>
                     </Table.Summary.Row>
                     <Table.Summary.Row style={{background: "#f5f5f5"}}>
-                      <Table.Summary.Cell index={0} colSpan={3} align='center'>{isVi ? "Ghi chú" : "Note"}</Table.Summary.Cell>
+                      <Table.Summary.Cell index={0} colSpan={3} align='center'>{isVi ? "Đã thanh toán" : "Amount paid"}</Table.Summary.Cell>
                       <Table.Summary.Cell index={3} colSpan={1} align='center'>
                         {isEditing ? (
                           <Input
