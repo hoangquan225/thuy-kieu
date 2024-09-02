@@ -344,6 +344,7 @@ const TemplateSecond = () => {
             </Row>
             <Row>
               <Table
+                className="table-template-2"
                 style={{width: "100%"}}
                 components={components}
                 pagination={false}
@@ -353,13 +354,13 @@ const TemplateSecond = () => {
                 columns={columns as ColumnTypes}
                 summary={() => (
                   <>
-                    <Table.Summary.Row style={{background: "#f5f5f5"}}>
+                    <Table.Summary.Row style={{background: "transparent !important", fontWeight: "500"}}>
                       <Table.Summary.Cell index={0} colSpan={3} align='center'>{isVi ? "Tổng cộng" : "Total"}</Table.Summary.Cell>
                       <Table.Summary.Cell index={3} colSpan={1} align='center'>
                         {formattedTotalAmount}
                       </Table.Summary.Cell>
                     </Table.Summary.Row>
-                    <Table.Summary.Row style={{background: "#f5f5f5"}}>
+                    <Table.Summary.Row style={{background: "transparent !important", fontWeight: "500"}}>
                       <Table.Summary.Cell index={0} colSpan={3} align='center'>{isVi ? "Đã thanh toán" : "Amount paid"}</Table.Summary.Cell>
                       <Table.Summary.Cell index={3} colSpan={1} align='center'>
                         {isEditing ? (
